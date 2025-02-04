@@ -3,60 +3,61 @@
     <head>
         <meta charset="UTF-8" name="viewport" content="width-device-width" />
         <title>pseudo3d</title>
-        <link rel="icon" href="ascii.png">
         <style type="text/css">
             body {
-                overflow: hidden;
-                padding: 0;
-                margin: 0;
                 background-color: #222222;
+                overflow: hidden;
             }
-            .container {
-                height: 100vh;
-                width: 100vw;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
+
+            /* Bounds allow this program to work at any window size */
             .image {
                 width: 50%;
                 height: 50%;
                 object-fit: contain;
+                position: absolute;
+                top: 25%;
+                left: 25%;
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <img src="ascii.png" class="image" />
-        </div>
+        <img src="ascii.webp" class="image" />
+
+        <!-- Import jQuery library. -->
         <script src="jquery.js"></script>
         <script>
             (function() {
-                var x, y,
-                    $element  = $('.image');
+                
+                // The element targeted by this program.
+                const element = $('.image')
 
+                // Calculate absolute mouse distance from element on the X axis.
                 function calculatex(mouseX) {
-                    return Math.floor(Math.sqrt(Math.pow(mouseX - ($element.offset().left+($element.width()/2)), 2)));
+                    return Math.floor(Math.sqrt(Math.pow(mouseX - (element.offset().left+(element.width()/2)), 2)));
                 }
 
+                // Calculate absolute mouse distance from element on the Y axis.
                 function calculatey(mouseY) {
-                    return Math.floor(Math.sqrt(Math.pow(mouseY - ($element.offset().top+($element.height()/2)), 2)));
+                    return Math.floor(Math.sqrt(Math.pow(mouseY - (element.offset().top+(element.height()/2)), 2)));
                 }
 
+                // On mouse move, recalculate values and reposition element.
                 $(document).mousemove(function(e) {  
                     x = e.pageX;
                     y = e.pageY;
                     distancex = calculatex(x);
                     distancey = calculatey(y);
 
-                    if (x < ($element.offset().left+($element.width()/2))) {
+                    // Make calculation values non-absolute.
+                    if (x < (element.offset().left+(element.width()/2))) {
                         distancex = (distancex * -1);
                     }
-                    if (y > ($element.offset().top+($element.height()/2))) {
+                    if (y > (element.offset().top+(element.height()/2))) {
                         distancey = (distancey * -1);
                     }
 
-                    $element.css('transform', 'perspective(800px) rotateX('+(distancey/30)+'deg) rotateY('+(distancex/30)+'deg)');
+                    // Skew element by calculated values, divided by 30.
+                    element.css('transform', 'perspective(800px) rotateX('+(distancey/30)+'deg) rotateY('+(distancex/30)+'deg)');
                 });
             })();
         </script>
